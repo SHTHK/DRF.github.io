@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>러브X6 캠퍼스 라이프! - 캐릭터 소개</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Sunflower:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ★ 분홍색 계열에서 하늘색~파란색 계열로 변경 */
+            --primary-pink: #76bfff; /* 메인 하늘색 */
+            --light-pink: #f0f7ff;   /* 연한 하늘색 배경 */
+            --dark-pink: #4e95d9;    /* 짙은 파란색 포인트 */
+            --accent-heart: #2575fc; /* 강조 파란색 */
+            --bg-gradient: linear-gradient(135deg, #e5f0ff 0%, #c2ddff 100%); /* 배경 그라디언트 */
+            --dialogue-bg: rgba(245, 250, 255, 0.95); /* 대사창 배경 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-gradient);
+            color: #333;
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+            background-image: 
+                radial-gradient(circle, #fff 10%, transparent 11%),
+                radial-gradient(circle, #fff 10%, transparent 11%);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            opacity: 0.15;
+        }
+
+        #landing-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .title-logo-container {
+            max-width: 600px;
+            width: 90%;
+            margin-bottom: 40px;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .title-logo-container img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0px 8px 15px rgba(78, 149, 217, 0.3)); /* 그림자 색상 파란 계열로 변경 */
+        }
+
+        .play-btn {
+            font-family: 'Sunflower', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            padding: 15px 60px;
+            color: white;
+            background: linear-gradient(180deg, #8fccff 0%, var(--accent-heart) 100%); /* 버튼 그라디언트 변경 */
+            border: 4px solid #ffffff;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(78, 149, 217, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 25px rgba(78, 149, 217, 0.6);
+            background: linear-gradient(180deg, #b3dcff 0%, var(--dark-pink) 100%);
+        }
+
+        #profile-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+            padding-bottom: 60px; 
+        }
+
+        .main-container {
+            width: 1000px;
+            max-width: 95%;
+            height: 650px;
+            max-height: 90vh;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 6px solid #fff;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(78, 149, 217, 0.2);
+            position: relative;
+            display: flex;
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .left-panel {
+            flex: 0 0 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%; 
+        }
+
+        .photo-frame {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            background: #fff;
+            border: 4px solid var(--primary-pink);
+            border-radius: 18px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-placeholder {
+            position: absolute;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .photo-placeholder svg {
+            fill: #cce3ff; /* 플레이스홀더 아이콘 색상 변경 */
+            width: 60px;
+            height: 60px;
+        }
+
+        .dialogue-box {
+            flex-grow: 1;
+            background: var(--dialogue-bg);
+            border: 3px solid var(--dark-pink);
+            border-radius: 15px;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .nametag {
+            position: absolute;
+            top: -15px;
+            left: 15px;
+            background: var(--dark-pink);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .dialogue-text {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #444;
+            word-break: keep-all;
+        }
+
+        .dialogue-arrow {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: var(--accent-heart);
+            font-size: 0.8rem;
+            animation: blink 1s infinite;
+        }
+
+        .right-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.85);
+            border: 3px dashed #b3dcff; /* 점선 테두리 색상 변경 */
+            border-radius: 20px;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            border-bottom: 3px solid var(--primary-pink);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
+
+        .char-name {
+            font-family: 'Sunflower', sans-serif;
+            font-size: 2.5rem;
+            color: var(--dark-pink);
+            font-weight: 700;
+        }
+
+        .char-meta {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--dark-pink);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .info-label::before {
+            content: '♥'; /* 아이콘을 별(★)이나 다이아(◆)로 바꾸고 싶으시면 이 부분을 변경하세요 */
+            color: var(--accent-heart);
+            font-size: 0.8rem;
+        }
+
+        .info-value {
+            color: #444;
+            word-break: keep-all;
+            padding-left: 18px;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 3px solid var(--primary-pink);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(78, 149, 217, 0.2);
+            transition: all 0.2s ease;
+            z-index: 20;
+        }
+
+        .nav-arrow:hover {
+            background: var(--light-pink);
+            transform: translateY(-50%) scale(1.1);
+            border-color: var(--dark-pink);
+        }
+
+        .nav-arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--dark-pink);
+        }
+
+        .nav-left { left: -80px; }
+        .nav-right { right: -80px; }
+
+        .indicator-container {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 30;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 3px solid var(--primary-pink);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .dot.active {
+            background-color: var(--accent-heart);
+            border-color: #fff;
+            transform: scale(1.3);
+            box-shadow: 0 3px 8px rgba(78, 149, 217, 0.4);
+        }
+
+        .dot:hover {
+            background-color: var(--light-pink);
+            transform: scale(1.2);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(3px); }
+        }
+
+        @media (max-width: 1200px) {
+            .nav-left { left: 15px; }
+            .nav-right { right: 15px; }
+            .main-container { width: 85%; }
+        }
+
+        /* 모바일 환경 */
+        @media (max-width: 768px) {
+            #profile-screen {
+                padding: 0; 
+            }
+            .main-container {
+                flex-direction: column;
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 100vh;
+                border: none; 
+                border-radius: 0; 
+                box-shadow: none; 
+                padding: 20px 20px 80px 20px; 
+                overflow-y: auto; 
+                gap: 15px; 
+            }
+            .left-panel {
+                flex: none;
+                width: 100%;
+                height: auto; 
+                gap: 12px;
+            }
+            .photo-frame {
+                width: 65%; 
+                margin: 0 auto;
+            }
+            .dialogue-box {
+                flex-grow: 0; 
+                min-height: 70px; 
+                padding: 15px 12px 10px 12px; 
+            }
+            .dialogue-text {
+                font-size: 0.95rem; 
+                line-height: 1.4;
+            }
+            .right-panel {
+                overflow-y: visible;
+                border: none; 
+                background: rgba(255, 255, 255, 0.4);
+                padding: 20px 15px;
+            }
+            .nav-arrow {
+                position: fixed;
+                top: 40%;
+                width: 45px;
+                height: 45px;
+            }
+            .nav-left { left: 10px; }
+            .nav-right { right: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sparkles"></div>
+
+    <div id="landing-screen">
+        <div class="title-logo-container">
+            <img src="./title.png" alt="타이틀 로고">
+        </div>
+        <button class="play-btn" onclick="startIntro()">PLAY</button>
+    </div>
+
+    <div id="profile-screen">
+        <div class="main-container">
+            
+            <button class="nav-arrow nav-left" onclick="prevChar()">
+                <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+            </button>
+
+            <div class="left-panel">
+                <div class="photo-frame">
+                    <img id="char-photo" src="" alt="캐릭터 사진" onerror="showPlaceholder()">
+                    <div id="photo-placeholder" class="photo-placeholder">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        <span>이미지 공간 (2:3)<br>추천: 600x900px</span>
+                    </div>
+                </div>
+                <div class="dialogue-box">
+                    <div id="char-nametag" class="nametag">이름</div>
+                    <div id="char-dialogue" class="dialogue-text">"대사 내용이 이곳에 표시됩니다."</div>
+                    <div class="dialogue-arrow">▼</div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="profile-header">
+                    <span id="char-display-name" class="char-name">홍길동</span>
+                    <span id="char-meta" class="char-meta">2학년 / 21세</span>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">소속 학과</div>
+                        <div id="char-dept" class="info-value">경영학과</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">성격 타입</div>
+                        <div id="char-personality" class="info-value">츤데레, 새침하지만 속은 따뜻함</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">주요 특징</div>
+                        <div id="char-features" class="info-value">늘 툴툴거리지만 곤란할 때 가장 먼저 도와주는 소꿉친구. 단 음식을 아주 좋아함.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="nav-arrow nav-right" onclick="nextChar()">
+                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </button>
+        </div>
+
+        <div class="indicator-container">
+            <div class="dot" onclick="jumpToChar(0)" title="1번 캐릭터"></div>
+            <div class="dot" onclick="jumpToChar(1)" title="2번 캐릭터"></div>
+            <div class="dot" onclick="jumpToChar(2)" title="3번 캐릭터"></div>
+            <div class="dot" onclick="jumpToChar(3)" title="4번 캐릭터"></div>
+            <div class="dot" onclick="jumpToChar(4)" title="5번 캐릭터"></div>
+            <div class="dot" onclick="jumpToChar(5)" title="6번 캐릭터"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const characters = [
+            {
+                name: "최윤아",
+                ageGrade: "1학년 / 20세",
+                dept: "제과제빵과",
+                personality: "언제나 활기차고 시끌벅적하다. 사교적이지만 사이코패스 기질 때문에 공감 능력은 부족하다.",
+                features: "사이코패스지만 흔히 매체에서 보여주는 살인자 같은 사람은 아니다. 공감이 힘들 뿐이다. 끼어드는 것을 좋아하고, 말이 많다. 재밌으면 장땡, 재미없는 건 최악. 달콤한 것을 좋아한다.",
+                quote: "“나 지금 뭔가 떠올랐는데 들어볼래? 아, 안 들어도 말할 거야.”",
+                photo: "./YA_cowboyshot_tp.png" 
+            },
+            {
+                name: "베르나데트 킹",
+                ageGrade: "3학년 / 22세",
+                dept: "법학과",
+                personality: "까칠하고, 도도하고, 오만하고... 요약해서 골치아픈 성격의 집합체다. 사실 은근히 섬세한 면이 있다. 츤데레.",
+                features: "프랑스 유학생. 애칭인 '버니'라고 부르면 화낸다. 베르라고 불러야 한다. 남자들을 부려먹는 것을 좋아한다. 성가신 여왕님이라고 할 수 있다. 사랑은 자신의 지배와 간섭을 수용하고 절대 복종하는 자에게만 주는 특권이라고 생각한다. ...하지만 사실 이런 도도한 모습에도 불구하고 귀여운 것을 좋아한다고 한다. 본인은 부정한다.",
+                quote: "“너에게 부탁을 한 게 아니라, 시킨 거야. 구분 좀 하지 그래?”",
+                photo: "./BN_cowboyshot_tp.png" 
+            },
+            {
+                name: "이유리",
+                ageGrade: "4학년 / 23세",
+                dept: "경호학과",
+                personality: "과묵해서 속을 좀처럼 알 수 없다. 하지만 파헤쳐보면 수줍고 따뜻한 마음을 가지고 있다는 것을 알 수 있다.",
+                features: "어려서부터 친구가 없었기 때문에 적절한 감정표현을 할 줄 모른다. 은연중에 따뜻함이 드러나는 스타일. 겉도는 성격과 괴력 때문에 뒷골목에 발을 들였다. 그녀를 따르는 부하가 몇 있다. 자신의 사람을 건드리면 가차 없다. 한번 정을 들이면 떨쳐내기 힘들어 한다. 초등학교 때 놀림 받은 이후로 외모에 자신이 없어서 항상 마스크를 쓰고다닌다. 미인임에도 불구하고.",
+                quote: "“...”",
+                photo: "./MS_cowboyshot_tp.png" 
+            },
+            {
+                name: "유시은",
+                ageGrade: "2학년 / 21세",
+                dept: "국어교육과",
+                personality: "온화하고 따뜻한, 모두에게 친절한 유형. 사려깊은 마음으로 모든 걸 수용하려고 한다. 하지만 항상 일정 거리 선을 긋는 편이다.",
+                features: "태어나서부터 병약한 체질이었다. 추위를 많이 탄다. 자신의 흔적을 세상에 남기고 싶어서 늘 카메라를 가지고 다니며 사진을 자주 찍는다. 언제 아파서 입원하게 될지 모르기 때문에 사람과 필요 이상으로 가까워지는 것을 꺼린다. 슬프게 할까봐.",
+                quote: "“사진 한 장 찍어도 될까? 이 순간을 기억하고 싶거든.”",
+                photo: "./SE_cowboyshot_tp.png" 
+            },
+            {
+                name: "이사벨라 엥겔",
+                ageGrade: "4학년 / 23세",
+                dept: "간호학과",
+                personality: "계산적이며, 웬만한 일엔 동요하지 않는다. 생각을 읽어내기가 쉽지 않다. 간호학과임에도 불구하고 생명을 경시한다.",
+                features: "독일 유학생. 밥먹듯이 밤샘 공부를 한다. 사람을 만날 땐 상대의 쓸모부터 따지며, 타인에게 정서적 에너지를 낭비하고 싶지 않아한다. 어려서부터 엄격하게 교육받았고, 아무리 열심히 해도 부모에게 늘 부족하다는 소리를 들었기 때문에 재능에 대한 강박과 열등감이 있다. 인정 욕구가 강하지만 숨기고 있다.",
+                quote: "“어머, 그런 것까지 신경 쓸 여유가 있구나? 한가하네.”",
+                photo: "./IS_cowboyshot_tp.png" 
+            },
+            {
+                name: "민서율",
+                ageGrade: "1학년 / 20세",
+                dept: "연극학과",
+                personality: "늘 내숭을 떨고 애교를 부린다. 다 관심을 받기 위해서다. 애정결핍. 사랑받기 위해 얌전하고 귀여운척을 전한다.",
+                features: "귀엽고 순수한 척 하지만 실은 왈가닥 하는 성격. 가족이 바빠서 사랑을 충분히 받고 자라지 못했다. 타인의 시선을 동력삼아 자신의 자존감을 증명하고, 고독함을 부정하려 한다.",
+                quote: "“흥, 다른 사람이랑 놀았으면서! 다음엔 무조건 나랑 놀아, 알겠지?”",
+                photo: "./SY_cowboyshot_tp.png" 
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function startIntro() {
+            const landing = document.getElementById('landing-screen');
+            const profile = document.getElementById('profile-screen');
+            
+            landing.style.opacity = '0';
+            landing.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                landing.style.display = 'none';
+                profile.style.display = 'flex';
+                setTimeout(() => {
+                    profile.style.opacity = '1';
+                }, 50);
+                updateCharacter(0);
+            }, 500);
+        }
+
+        function updateCharacter(index) {
+            currentIndex = index;
+            const data = characters[index];
+
+            document.getElementById('char-nametag').innerText = data.name;
+            document.getElementById('char-display-name').innerText = data.name;
+            document.getElementById('char-meta').innerText = data.ageGrade;
+            document.getElementById('char-dept').innerText = data.dept;
+            document.getElementById('char-personality').innerText = data.personality;
+            document.getElementById('char-features').innerText = data.features;
+            document.getElementById('char-dialogue').innerText = data.quote;
+
+            const imgElement = document.getElementById('char-photo');
+            const placeholder = document.getElementById('photo-placeholder');
+            
+            imgElement.style.opacity = '0';
+            imgElement.src = data.photo;
+            
+            imgElement.onload = function() {
+                placeholder.style.display = 'none';
+                imgElement.style.opacity = '1';
+            };
+            
+            imgElement.onerror = function() {
+                placeholder.style.display = 'flex';
+                imgElement.style.opacity = '0';
+            };
+
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function nextChar() {
+            let nextIndex = currentIndex + 1;
+            if (nextIndex >= characters.length) {
+                nextIndex = 0;
+            }
+            updateCharacter(nextIndex);
+        }
+
+        function prevChar() {
+            let prevIndex = currentIndex - 1;
+            if (prevIndex < 0) {
+                prevIndex = characters.length - 1;
+            }
+            updateCharacter(prevIndex);
+        }
+
+        function jumpToChar(index) {
+            updateCharacter(index);
+        }
+
+        function showPlaceholder() {
+            document.getElementById('photo-placeholder').style.display = 'flex';
+            document.getElementById('char-photo').style.opacity = '0';
+        }
+    </script>
+</body>
+</html>
